@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>Film</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const url = window.location.href;
+            const film_id = parseInt(url.slice(39));
+            $.get(`http://localhost:8081/film?film_id=${film_id}`, function (data, status) {
+                const film = data;
+                var result = "";
+
+                film.forEach(function (filmDetail) {
+                    result = 
+                    `<div id="page" class="mt-5">
+                        <div class="container d-flex align-items-center justify-content-center">
+                                <div class="card text-center bg-secondary">
+                                    <div class="card-body fw-bold text-white">
+                                        <p id="result-header">${filmDetail.title}</p>
+                                        <p id="result">Category: ${filmDetail.category}</p>
+                                        <p id="result">Release Year: ${filmDetail.release_year}</p>
+                                        <p id="result">Description: ${filmDetail.description}</p>
+                                        <p id="result">Film Rating: ${filmDetail.rating}</p>
+                                        <p id="result">Actors:<br />${filmDetail.actors}</p>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>`;
+                    $("#result").append(result);
+                });
+            });
+        });
+    </script>
+    
+    <title>Film Detail</title>
+</head>
+<body style="background-color: black;">
+    <div id="result">
+        
+    </div>
+    <div class="container d-flex align-items-center justify-content-center mt-5">
+    <a href="home.html"><button class="btn btn-outline-primary" type="button">Back To Home</button></a>
+    </div>
+</body>
+</html>

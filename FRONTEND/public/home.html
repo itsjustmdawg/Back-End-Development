@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/home.css">
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>SP DVD</title>
+    <script>
+        $(document).ready(function() {
+                $('#search').click(function(){
+                var category = $('#dropdown').val();
+                var title = $('#title').val();
+                var max = $('#max').val();
+                if(category == 0){
+                    $.get(`http://localhost:8081/filmByTitle?search=${title}&max=${max}`, function(data, status){
+                        const films = data;
+                        if(films == ""){
+                            $('#result').append(`<h1 id="no-search-results">No Search Results For: ${title}, Max Price: $${max}</h1>`);
+                        }
+                        var result = ``;
+                        films.forEach(function(film){
+                            result = `
+                            <div style="margin: 5rem 0 5rem 0;">
+                                <h1>Title: ${film.title}</h1>
+                                <h2>Release Year: ${film.release_year}</h2>
+                                <h3>Rating: ${film.rating}</h3>
+                                <a href="http://localhost:3001/filmDetail.html?=${film.film_id}"><p class="text-white">Click Here to Find Out More!</p></a>
+                            </div>
+                            `;
+                            $("#result").append(result);
+                        })
+                    })
+                }else if(category > 0){
+                    $.get(`http://localhost:8081/filmByCategory?category_id=${category}&max=${max}`, function(data, status){
+                        const films = data;
+                        var result = ``;
+                        if(films == ""){
+                            $('#result').append(`<h1 id="no-search-results">No Search Results For: ${search}, Max Price: $${max}</h1>`);
+                        }
+
+                        films.forEach(function(film){
+                            result = `
+                            <div style="margin: 5rem 0 5rem 0;">
+                            <h1>Title: ${film.title}</h1>
+                            <h2>Release Year: ${film.release_year}</h2>
+                            <h3>Rating: ${film.rating}</h3>
+                            <a href="http://localhost:3001/filmDetail.html?=${film.film_id}"><p class="text-white">Click Here to Find Out More!</p></a>
+                            </div>
+                            `;
+                            $("#result").append(result);
+                        });
+                    });
+                }
+            });
+            $.get('http://localhost:8081/film_category', function(data, status){
+                var categories = data;
+                var i = 1;
+                categories.forEach(function(category){
+                    var result = `
+                    <option value=${i}>${category.name}</option>
+                    `;
+                    $('#dropdown').append(result);
+                    ++i;
+                })
+            })
+        });
+    </script>
+</head>
+
+<body>
+    <div class="navigation">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand">SP DVD</a>
+                <form class="d-flex" role="search">
+                    <a href="http://localhost:3001/login.html"><button class="btn btn-outline-primary"
+                            type="button">Admin Login</button></a>
+                </form>
+            </div>
+        </nav>
+    </div>
+
+    <div class="searchForm">
+        <form id="form">
+            <h2 class="ft-white underline">SEARCH FOR DVD LISTINGS</h2>
+            <div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title"
+                        placeholder="Type DVD title here">
+                </div>
+                <h3 class="d-flex justify-content-center">or</h3>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="dropdown">
+                        <option selected value=0>Select a category</option>
+                        <!-- <option value=1>Action</option>
+                        <option value=2>Animation</option>
+                        <option value=3>Children</option>
+                        <option value=4>Classics</option>
+                        <option value=5>Comedy</option>
+                        <option value=6>Documentary</option>
+                        <option value=7>Drama</option>
+                        <option value=8>Family</option>
+                        <option value=9>Foreign</option>
+                        <option value=10>Games</option>
+                        <option value=11>Horror</option>
+                        <option value=12>Music</option>
+                        <option value=13>New</option>
+                        <option value=14>Sci-Fi</option>
+                        <option value=15>Sports</option>
+                        <option value=16>Travel</option> -->
+                    </select>
+                </div>
+            </div>
+            <h3 class="d-flex justify-content-center">and</h3>
+            <div class="mb-3">
+                <label class="form-label" for="typeNumber">Max Rental Rate</label>
+                <input type="number" id="max" class="form-control" placeholder="Set max rental rate" />
+            </div>
+            <div class="d-flex justify-content-center">
+                <button id="search" type="button">
+                    <span>Search</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container mt-5 text-white text-center"  id="result">
+    </div>
+</body>
+
+</html>

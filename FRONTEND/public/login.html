@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+
+    <link rel="stylesheet" href="./css/login.css">
+    <script>
+        $(document).ready(function () {
+			$("#login").click(function () {
+				var email = $('#email').val();
+				var password = $('#password').val();
+				var data = `{ "email": "${email}", "password": "${password}" }`;
+				$.ajax({
+					url: 'http://localhost:8081/admin/login',
+					type: 'POST',
+					data: data,
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data, textStatus, xhr) {
+						if (data != null && data.success) {
+							localStorage.setItem('token', data.token);
+							window.location.assign("http://localhost:3001/newActor.html");
+						}
+					},
+					error: function (xhr, textStatus, errorThrown) {
+						window.alert('Invalid email or password!');
+					}
+				});
+				return false;
+			});
+		});  
+    </script>
+    <title>SP DVD Admin Login</title>
+</head>
+<body>
+    <div class="box">
+        <div class="form">
+            <h2>Administrator Log In</h2>
+            <div class="inputBox">
+                <input type="text" required="required" id="email">
+                <span>Email</span>
+                <i></i> 
+            </div>
+            <div class="inputBox">
+                <input type="password" required="required" id="password">
+                <span>Password</span>
+                <i></i> 
+            </div>
+            <input type="submit" value="Login" id="login">
+        </div>
+    </div>
+    <a href="home.html"><button class="btn btn-outline-primary" type="button">Back To Home</button></a>
+
+</body>
+</html>
